@@ -1,1 +1,8 @@
-[{"relation":["delegate_permission/common.handle_all_urls"],"target":{"namespace":"android_app","package_name":"com.TUNOMBRE.programaenlaces","sha256_cert_fingerprints":["PEGA_AQUI_LA_HUELLA_SHA256_DE_PLAY_CONSOLE"]}}]
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.isaisantiago0.programaenlaces",
+        "sha256_cert_fingerprints": ["AD:D6:E4:EF:54:5B:6F:A6:95:2A:26:09:90:E8:9C:E9:DE:9C:99:76:93:44:4B:8C:88:D1:78:D7:C3:80:41:13"]
+      }
+    }]
