@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Programa Enlaces</title>
+<meta name="theme-color" content="#2456d6">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#f6f7f9;--fg:#1a1d23;--muted:#5b6472;--card:#fff;--bd:#d5dae1;--acc:#2456d6;--ion:#b4531a;--met:#506274;--cov:#1c7c54;--non:#7a4aa8;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171c;--fg:#e8ebf0;--muted:#9aa4b2;--card:#1d2229;--bd:#323a45;--acc:#7aa2ff;--ion:#f0a06a;--met:#a9b7c6;--cov:#5fd0a0;--non:#c4a0f0;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14171c;--fg:#e8ebf0;--muted:#9aa4b2;--card:#1d2229;--bd:#323a45;--acc:#7aa2ff;--ion:#f0a06a;--met:#a9b7c6;--cov:#5fd0a0;--non:#c4a0f0;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:520px;margin:0 auto;padding:24px 16px 40px}
+h1{font-size:1.5rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 20px}
+label{display:block;font-weight:600;margin:14px 0 6px}
+input{width:100%;font:inherit;font-size:16px;padding:12px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--fg)}
+input:focus-visible,button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.go{width:100%;margin-top:16px;padding:13px;font:inherit;font-weight:600;border:0;border-radius:10px;background:var(--acc);color:var(--bg);cursor:pointer}
+.ex{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+.ex span{color:var(--muted);font-size:.9rem}
+.ex button{font:inherit;font-size:.9rem;padding:6px 12px;border:1px solid var(--bd);border-radius:999px;background:var(--card);color:var(--fg);cursor:pointer}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-top:20px}
+.res{border-left:6px solid var(--c)}
+.ionico{--c:var(--ion)}.metalico{--c:var(--met)}.covalente{--c:var(--cov)}.noposible{--c:var(--non)}
+.res h2{margin:0 0 6px;font-size:1.3rem;color:var(--c)}
+.res p{margin:6px 0}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.chip{border:1px solid var(--bd);border-radius:10px;padding:8px 10px}
+.chip span{display:block;color:var(--muted);font-size:.85rem}
+.mat{margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)}
+.err{color:var(--non)}
+footer{color:var(--muted);font-size:.85rem;margin-top:24px}
+.bar{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--acc);color:var(--bg)}
+.bar h1{margin:0;font-size:1.2rem;color:inherit}
+.bar svg{flex:none}
+.row{display:flex;gap:8px;margin-top:16px}
+.row .go{width:auto;flex:1;margin-top:0}
+.sec{padding:0 16px;font:inherit;font-weight:600;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--fg);cursor:pointer}
+button{min-height:44px}
+</style>
+</head>
+<body>
+<header class="bar"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="8" y="13" width="14" height="4" fill="currentColor"/><circle cx="8" cy="15" r="6" fill="currentColor"/><circle cx="22" cy="15" r="6" fill="currentColor"/></svg><h1>Programa Enlaces</h1></header>
+<main>
+<p class="sub">Escribe dos elementos y descubre qué enlace forman.</p>
+
+<label for="q1">1er elemento</label>
+<input id="q1" placeholder="Símbolo, nombre o número atómico" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go">
+<label for="q2">2do elemento</label>
+<input id="q2" placeholder="Ej.: Si, fósforo, 15" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go">
+<div class="row"><button class="go" id="go" type="button">Calcular</button><button class="sec" id="swap" type="button" aria-label="Intercambiar elementos">⇄</button><button class="sec" id="clr" type="button">Limpiar</button></div>
+
+<div class="ex" id="ex"><span>Ejemplos:</span></div>
+<div id="out" aria-live="polite"></div>
+
+<footer>Modelo didáctico simplificado: clasifica por categoría y grupo de la tabla periódica, no por electronegatividad.</footer>
+</main>
+
+<script>
+// Una línea por elemento: símbolo nombre categoría grupo. El número atómico es la posición (H = 1 ... Og = 118).
+// Categorías: m metal, n no metal, x metaloide, g gas noble. Grupo "-" = lantánidos y actínidos.
+const E = `H Hidrogeno n 1
+He Helio g 18
+Li Litio m 1
+Be Berilio m 2
+B Boro x 13
+C Carbono n 14
+N Nitrogeno n 15
+O Oxigeno n 16
+F Fluor n 17
+Ne Neon g 18
+Na Sodio m 1
+Mg Magnesio m 2
+Al Aluminio m 13
+Si Silicio x 14
+P Fosforo n 15
+S Azufre n 16
+Cl Cloro n 17
+Ar Argon g 18
+K Potasio m 1
+Ca Calcio m 2
+Sc Escandio m 3
+Ti Titanio m 4
+V Vanadio m 5
+Cr Cromo m 6
+Mn Manganeso m 7
+Fe Hierro m 8
+Co Cobalto m 9
+Ni Niquel m 10
+Cu Cobre m 11
+Zn Zinc m 12
+Ga Galio m 13
+Ge Germanio x 14
+As Arsenico x 15
+Se Selenio n 16
+Br Bromo n 17
+Kr Kripton g 18
+Rb Rubidio m 1
+Sr Estroncio m 2
+Y Itrio m 3
+Zr Zirconio m 4
+Nb Niobio m 5
+Mo Molibdeno m 6
+Tc Tecnecio m 7
+Ru Rutenio m 8
+Rh Rodio m 9
+Pd Paladio m 10
+Ag Plata m 11
+Cd Cadmio m 12
+In Indio m 13
+Sn Estano m 14
+Sb Antimonio x 15
+Te Telurio x 16
+I Yodo n 17
+Xe Xenon g 18
+Cs Cesio m 1
+Ba Bario m 2
+La Lantano m 3
+Ce Cerio m -
+Pr Praseodimio m -
+Nd Neodimio m -
+Pm Prometio m -
+Sm Samario m -
+Eu Europio m -
+Gd Gadolinio m -
+Tb Terbio m -
+Dy Disprosio m -
+Ho Holmio m -
+Er Erbio m -
+Tm Tulio m -
+Yb Iterbio m -
+Lu Lutecio m -
+Hf Hafnio m 4
+Ta Tantalio m 5
+W Wolframio m 6
+Re Renio m 7
+Os Osmio m 8
+Ir Iridio m 9
+Pt Platino m 10
+Au Oro m 11
+Hg Mercurio m 12
+Tl Talio m 13
+Pb Plomo m 14
+Bi Bismuto m 15
+Po Polonio x 16
+At Astato x 17
+Rn Radon g 18
+Fr Francio m 1
+Ra Radio m 2
+Ac Actinio m 3
+Th Torio m -
+Pa Protactinio m -
+U Uranio m -
+Np Neptunio m -
+Pu Plutonio m -
+Am Americio m -
+Cm Curio m -
+Bk Berkelio m -
+Cf Californio m -
+Es Einstenio m -
+Fm Fermio m -
+Md Mendelevio m -
+No Nobelio m -
+Lr Lawrencio m -
+Rf Rutherfordio m 4
+Db Dubnio m 5
+Sg Seaborgio m 6
+Bh Bohrio m 7
+Hs Hasio m 8
+Mt Meitnerio m 9
+Ds Darmstadtio m 10
+Rg Roentgenio m 11
+Cn Copernicio m 12
+Nh Nihonio m 13
+Fl Flerovio m 14
+Mc Moscovio m 15
+Lv Livermorio m 16
+Ts Teneso n 17
+Og Oganeson g 18`.split("\n").map((l, i) => {
+  const [s, nom, c, g] = l.trim().split(" ");
+  return { z: i + 1, s, nom, c, g: g === "-" ? null : +g };
+});
+
+const CAT = { m: "metal", n: "no metal", x: "metaloide", g: "gas noble" };
+const SEMI = ["C", "Si", "Ge"]; // semiconductores del grupo 14 (Sn y Pb son metales)
+
+const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+const bySym = Object.create(null), byName = Object.create(null);
+E.forEach(e => { bySym[e.s.toLowerCase()] = e; byName[norm(e.nom)] = e; });
+byName.tungsteno = E[73];
+byName.einsteinio = E[98];
+
+function find(q) {
+  q = q.trim();
+  if (/^[0-9]+$/.test(q)) return E[+q - 1] || null;
+  return bySym[q.toLowerCase()] || byName[norm(q)] || null;
+}
+
+function material(a, b) {
+  if (SEMI.includes(a.s) && SEMI.includes(b.s))
+    return { t: "Intrínseco", m: "Semiconductores del grupo 14 sin impurezas." };
+  for (const [h, i] of [[a, b], [b, a]]) {
+    if (!SEMI.includes(h.s)) continue;
+    if (i.g === 13) return { t: "Extrínseco tipo P", m: `${i.nom} (grupo 13) tiene 3 electrones de valencia y deja un hueco en la red de ${h.nom}.` };
+    if (i.g === 15) return { t: "Extrínseco tipo N", m: `${i.nom} (grupo 15) tiene 5 electrones de valencia y aporta un electrón libre a la red de ${h.nom}.` };
+  }
+  return null;
+}
+
+function enlace(a, b) {
+  if (a.c === "g" || b.c === "g")
+    return { k: "noposible", t: "No es posible formar enlace", m: "Al menos uno de ellos es un gas noble (capa de valencia completa)." };
+  const mat = material(a, b);
+  if (mat) return { k: "covalente", t: "Enlace covalente", m: "Se comparten electrones en una red de semiconductor.", mat };
+  if (a.c === "m" && b.c === "m")
+    return { k: "metalico", t: "Enlace metálico", m: "Dos metales: los electrones de valencia quedan deslocalizados." };
+  if (a.c === "m" || b.c === "m")
+    return { k: "ionico", t: "Enlace iónico", m: "Un metal cede electrones al otro elemento, formando iones." };
+  return { k: "covalente", t: "Enlace covalente", m: "Dos no metales o metaloides comparten electrones.", mat: { t: "No aplica", m: "No es un semiconductor." } };
+}
+
+const chip = e => `<div class="chip"><b>${e.nom} (${e.s})</b><span>Z = ${e.z} · ${CAT[e.c]}${e.g ? " · grupo " + e.g : ""}</span></div>`;
+const q1 = document.getElementById("q1"), q2 = document.getElementById("q2"), out = document.getElementById("out");
+
+function calc() {
+  const a = find(q1.value), b = find(q2.value);
+  if (!a || !b) {
+    const mal = [!a && "1er elemento", !b && "2do elemento"].filter(Boolean).join(" y ");
+    out.innerHTML = '<div class="card err"></div>';
+    out.firstChild.textContent = `No reconocí el ${mal}. Escribe un símbolo (Si), un nombre (silicio) o un número atómico (14).`;
+    return;
+  }
+  const r = enlace(a, b);
+  out.innerHTML = `<div class="card res ${r.k}"><div class="chips">${chip(a)}${chip(b)}</div><h2>${r.t}</h2><p>${r.m}</p>` +
+    (r.mat ? `<div class="mat"><b>Tipo de material:</b> ${r.mat.t}<p>${r.mat.m}</p></div>` : "") + "</div>";
+}
+
+document.getElementById("go").addEventListener("click", calc);
+[q1, q2].forEach(i => i.addEventListener("keydown", ev => { if (ev.key === "Enter") calc(); }));
+[["Si", "P"], ["Si", "B"], ["Na", "Cl"], ["Fe", "Cu"], ["H", "O"], ["He", "O"]].forEach(([x, y]) => {
+  const bt = document.createElement("button");
+  bt.type = "button";
+  bt.textContent = `${x} + ${y}`;
+  bt.addEventListener("click", () => { q1.value = x; q2.value = y; calc(); });
+  document.getElementById("ex").appendChild(bt);
+});
+document.getElementById("swap").addEventListener("click", () => { [q1.value, q2.value] = [q2.value, q1.value]; if (q1.value && q2.value) calc(); });
+document.getElementById("clr").addEventListener("click", () => { q1.value = ""; q2.value = ""; out.innerHTML = ""; q1.focus(); });
+if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
+</script>
+</body>
+</html>
